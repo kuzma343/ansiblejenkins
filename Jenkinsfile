@@ -13,17 +13,6 @@ pipeline {
             }
         }
         
-        stage('Run Docker Container') {
-            steps {
-                script {
-                    docker.image('docker').withRun('-it', 'ansible') {
-                        // Команда для запуску Docker контейнера
-                        sh 'docker run -it ansible'
-                    }
-                }
-            }
-        }
-        
         stage('Tag Docker Image') {
             steps {
                 script {
@@ -43,5 +32,5 @@ pipeline {
             }
         }
     }
-    
 }
+
