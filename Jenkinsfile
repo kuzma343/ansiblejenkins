@@ -2,24 +2,20 @@ pipeline {
     agent any
     
     stages {
-        stage('Build Docker Image') {
+        stage('Build') {
             steps {
                 script {
-                    docker.image('docker').withRun('-d', 'ansible') {
-                        // Команда для збірки Docker образу
-                        sh 'docker build -t ansible .'
-                    }
+                    // Команда docker build
+                    sh 'docker build -t ansible .'
                 }
             }
         }
         
-        stage('Run Docker Container') {
+        stage('Run') {
             steps {
                 script {
-                    docker.image('docker').withRun('-d', 'ansible') {
-                        // Команда для запуску Docker контейнера
-                        sh 'docker run -d ansible'
-                    }
+                    // Команда docker run
+                    sh 'docker run -d ansible'
                 }
             }
         }
