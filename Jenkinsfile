@@ -35,10 +35,11 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Команда для запуску Docker контейнера з /bin/ban командою
+                    // Команда для запуску Docker контейнера з /bin/ban командою та передачею вхідного терміналу
                     sh 'docker run -it ansible /bin/ban'
                 }
             }
         }
     }
 }
+
