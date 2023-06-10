@@ -1,16 +1,18 @@
-#!groovy
-//  groovy Jenkinsfile
-properties([disableConcurrentBuilds()])
+// groovy Jenkinsfile
+properties([
+    disableConcurrentBuilds()
+])
 
-pipeline  {
-        agent { 
-           label ''
-        }
+pipeline {
+    agent {
+        label ''
+    }
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
     }
+
     stages {
         stage('Build Docker Image') {
             steps {
@@ -22,7 +24,7 @@ pipeline  {
                 }
             }
         }
-        
+
         stage('Tag Docker Image') {
             steps {
                 script {
@@ -31,9 +33,10 @@ pipeline  {
                 }
             }
         }
-        stage("docker login") {
+
+        stage("Docker login") {
             steps {
-                echo " ============== docker login =================="
+                echo "============= Docker login ================"
                 withCredentials([usernamePassword(credentialsId: 'DockerHub-Credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh '''
                     docker login -u $USERNAME -p $PASSWORD
@@ -41,16 +44,15 @@ pipeline  {
                 }
             }
         }
-        
+
         stage('Docker Push') {
             steps {
                 script {
-                    
                     sh 'docker push kuzma343/ansible:latest'
                 }
             }
         }
-        
+
         stage('Run Docker Container') {
             steps {
                 script {
@@ -61,4 +63,3 @@ pipeline  {
         }
     }
 }
-
