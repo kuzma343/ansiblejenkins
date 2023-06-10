@@ -5,6 +5,6 @@ RUN apt-add-repository -y ppa:ansible/ansible
 RUN apt-get update && apt-get install -y ansible
 
 RUN echo "[ubuntu_hosts]\n192.168.0.160 ansible_user=kuzma ansible_password=qwerty" >> /etc/ansible/hosts
-
+RUN echo "[defaults]\host_key_checking = False" >> /etc/ansible/ansible.cfg
 
 CMD ["/bin/bash"]
