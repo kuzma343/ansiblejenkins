@@ -21,11 +21,20 @@ pipeline {
                 }
             }
         }
+        stage("docker login") {
+            steps {
+                echo " ============== docker login =================="
+                withCredentials([usernamePassword(credentialsId: 'DockerHub-Credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh '''
+                    docker login -u $USERNAME -p $PASSWORD
+                    '''
+                }
+            }
+        }
         
-        stage('Docker Login and Push') {
+        stage('Docker Push') {
             steps {
                 script {
-                    // Команда для входу в Docker та публікації образу
                     sh 'docker login'
                     sh 'docker push kuzma343/ansible:latest'
                 }
