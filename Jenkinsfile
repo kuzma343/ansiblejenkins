@@ -1,42 +1,39 @@
-// groovy Jenkinsfile
-properties([
-    disableConcurrentBuilds()
-])
+#!groovy
+//  groovy Jenkinsfile
+properties([disableConcurrentBuilds()])
 
-pipeline {
-    agent {
-        label ''
+pipeline  {
+        agent { 
+           label ''
+        }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
     }
-
-    environment {
-       
-        DOCKER_IMAGE = 'ansible'
-    }
-
     stages {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'DockerHub-Credentials') {
-                        // Build Docker image
-                        sh 'docker build -t $DOCKER_IMAGE .'
+                    docker.image('docker').withRun('-it', 'ansible') {
+                        // Команда для збірки Docker образу
+                        sh 'docker build -t ansible .'
                     }
                 }
             }
         }
-
+        
         stage('Tag Docker Image') {
             steps {
                 script {
-                    // Tag Docker image
-                    sh "docker tag $DOCKER_IMAGE:latest kuzma343/ansible:latest"
+                    // Команда для тегування Docker образу
+                    sh 'docker tag ansible:latest kuzma343/ansible:latest'
                 }
             }
         }
-
-        stage("Docker login") {
+        stage("docker login") {
             steps {
-                echo "============= Docker login ================"
+                echo " ============== docker login =================="
                 withCredentials([usernamePassword(credentialsId: 'DockerHub-Credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh '''
                     docker login -u $USERNAME -p $PASSWORD
@@ -44,20 +41,21 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Docker Push') {
             steps {
                 script {
+                    
                     sh 'docker push kuzma343/ansible:latest'
                 }
             }
         }
-
+        
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Run Docker container
-                    sh 'docker run -it $DOCKER_IMAGE /bin/ban'
+                    // Команда для запуску Docker контейнера з /bin/ban командою та передачею вхідного терміналу
+                    sh 'docker run -it ansible /bin/ban'
                 }
             }
         }
