@@ -35,7 +35,7 @@ pipeline {
         stage('Docker Push') {
             steps {
                 script {
-                    sh 'docker login'
+                    
                     sh 'docker push kuzma343/ansible:latest'
                 }
             }
