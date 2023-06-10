@@ -8,10 +8,6 @@ pipeline {
         label ''
     }
 
-    options {
-        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
-        timestamps()
-    }
 
     stages {
         stage('Build Docker Image') {
